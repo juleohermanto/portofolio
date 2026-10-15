@@ -3,33 +3,50 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Juleo Hermanto — Coming Soon</title>
+<meta name="description" content="Juleo Hermanto — personal portfolio. Under construction.">
+<meta name="theme-color" content="#080808">
+<title>Juleo Hermanto — Portfolio</title>
+<script>document.documentElement.classList.add('js')</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #080808;
     --fg: #F5F5F5;
-    --muted: #888888;
+    --muted: #7A7A7A;
+    --sig: #888888;
+    --badge: #666666;
     --dim: #555555;
-    --line: rgba(255,255,255,.06);
+    --line: rgba(255,255,255,.08);
+    --shimmer: rgba(255,255,255,.07);
     --ease: cubic-bezier(.16,1,.3,1);
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+    --sans: 'Inter Tight', system-ui, sans-serif;
+    --gutter: clamp(28px, 6vw, 96px);
+    --pad: clamp(20px, 2.6vw, 36px);
+    --top: clamp(4.5rem, 11vw, 8.5rem);
   }
   body.light {
-    --bg: #F5F5F5; --fg: #080808; --muted: #6a6a6a; --dim: #aaaaaa;
-    --line: rgba(0,0,0,.08);
+    --bg: #F5F5F5; --fg: #080808; --muted: #6a6a6a; --sig: #777777; --badge: #8a8a8a; --dim: #aaaaaa;
+    --line: rgba(0,0,0,.09); --shimmer: rgba(0,0,0,.06);
   }
   *{margin:0;padding:0;box-sizing:border-box}
-  html,body{width:100%;height:100%}
+  html{scrollbar-width:thin;scrollbar-color:#2a2a2a transparent}
   body{
-    width:100vw;height:100vh;overflow:hidden;
+    min-height:100vh;overflow-x:clip;
     background:var(--bg);color:var(--fg);
-    font-family:'Inter Tight',system-ui,sans-serif;
+    font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;
     cursor:none;
     transition:background .8s var(--ease),color .8s var(--ease);
   }
-  a,button{cursor:none}
+  a,button{cursor:none;color:inherit;text-decoration:none}
+  ::selection{background:var(--fg);color:var(--bg)}
+  .dud{color:var(--dim);font-family:var(--mono);font-weight:400;letter-spacing:0}
+
+  /* leaves */
+  .leaves{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
 
   /* film grain */
   .grain{position:fixed;inset:-50%;width:200%;height:200%;pointer-events:none;z-index:50;opacity:.03;
@@ -49,13 +66,17 @@
   .cross.tl{top:17px;left:17px}.cross.tr{top:17px;right:17px}
   .cross.bl{bottom:17px;left:17px}.cross.br{bottom:17px;right:17px}
 
-  /* meta */
-  .meta{position:fixed;z-index:3;font:400 10px/1 'JetBrains Mono',monospace;letter-spacing:.14em;
-    text-transform:uppercase;color:var(--muted);opacity:0;animation:fade 1.6s var(--ease) 1.2s forwards}
+  /* meta — opaque tags so scrolling content never collides with them */
+  .meta{position:fixed;z-index:40;font:400 10px/1 var(--mono);letter-spacing:.14em;
+    text-transform:uppercase;color:var(--muted);background:var(--bg);padding:5px 7px;margin:-5px -7px;
+    opacity:0;animation:fade 1.6s var(--ease) 1.2s forwards;transition:background .8s var(--ease),opacity .5s var(--ease)}
   .meta.l{left:44px;bottom:44px}.meta.r{right:44px;top:44px}.meta.t{left:44px;top:44px}
+  .meta.t{color:var(--fg)}
 
-  /* centerpiece */
-  .stage{position:fixed;inset:0;display:grid;place-items:center;z-index:5}
+  /* ───────── hero ───────── */
+  .hero{position:relative;z-index:10;height:100vh;height:100svh;min-height:520px;
+    display:flex;align-items:center;justify-content:center}
+  .hero-center{position:relative;display:inline-flex;flex-direction:column}
   .wrap{display:flex;flex-direction:column;width:fit-content;max-width:92vw}
   .headline{
     font-weight:800;letter-spacing:-.04em;line-height:1;
@@ -63,20 +84,155 @@
     white-space:nowrap;
     font-variant-numeric:tabular-nums;
   }
-  .headline .dud{color:var(--dim);font-family:'JetBrains Mono',monospace;font-weight:400;letter-spacing:0}
   .sig{
     align-self:flex-end;text-align:right;margin-top:.75rem;
-    font:400 .75rem/1 'JetBrains Mono',monospace;letter-spacing:.12em;color:var(--muted);
+    font:400 .75rem/1 var(--mono);letter-spacing:.1em;color:var(--sig);
     opacity:0;transform:translateY(6px);
     animation:fade 1.4s var(--ease) 1s forwards;
   }
+  .status{
+    position:absolute;top:calc(100% + clamp(2.75rem,8vh,5rem));left:50%;translate:-50% 0;
+    display:inline-flex;align-items:center;gap:.9rem;white-space:nowrap;
+    padding:.7rem 1rem .7rem .9rem;border:1px solid var(--line);
+    font:400 .7rem/1 var(--mono);letter-spacing:.25em;text-transform:uppercase;color:var(--badge);
+    opacity:0;transform:translateY(6px);animation:fade 1.4s var(--ease) 1.6s forwards;
+  }
+  .pulse{position:relative;width:5px;height:5px;border-radius:50%;background:var(--fg);
+    animation:blink 2.4s ease-in-out infinite}
+  .pulse::after{content:"";position:absolute;inset:0;border-radius:50%;border:1px solid var(--fg);
+    animation:ping 2.4s var(--ease) infinite}
+  @keyframes blink{50%{opacity:.35}}
+  @keyframes ping{0%{transform:scale(1);opacity:.55}100%{transform:scale(3.4);opacity:0}}
+  .cue{position:absolute;left:50%;bottom:40px;translate:-50% 0;width:1px;height:64px;overflow:hidden;
+    background:var(--line);opacity:0;animation:fade 1.4s var(--ease) 2.1s forwards}
+  .cue::after{content:"";position:absolute;left:0;top:0;width:1px;height:22px;background:var(--fg);
+    animation:drop 2.2s var(--ease) infinite}
+  @keyframes drop{0%{transform:translateY(-22px)}70%,100%{transform:translateY(64px)}}
   @keyframes fade{to{opacity:1;transform:none}}
+
+  /* ───────── swiss sheet ───────── */
+  .page{position:relative;z-index:10;padding:0 var(--gutter)}
+  .sheet{position:relative;max-width:1200px;margin:0 auto;
+    border-left:1px solid var(--line);border-right:1px solid var(--line)}
+  .sec{position:relative}
+  .sec::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:var(--line);
+    transform:scaleX(0);transform-origin:left;transition:transform 1.6s var(--ease)}
+  .sec.in::before,html:not(.js) .sec::before{transform:none}
+
+  .label{font:400 .68rem/1.6 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .label b{font-weight:500;color:var(--fg)}
+
+  .sec-head{display:grid;grid-template-columns:3fr 9fr;border-bottom:1px solid var(--line)}
+  .sec-label{display:flex;flex-direction:column;justify-content:space-between;gap:2rem;
+    padding:var(--top) var(--pad) var(--pad);border-right:1px solid var(--line)}
+  .sec-title{padding:var(--top) var(--pad) var(--pad);font-weight:800;letter-spacing:-.04em;line-height:.92;
+    font-size:clamp(2.6rem,7.4vw,6.25rem)}
+
+  .rows > * + *{border-top:1px solid var(--line)}
+
+  /* 01 skills — bento */
+  .bento{display:grid;grid-template-columns:7fr 5fr}
+  .cell{display:flex;flex-direction:column;gap:1.75rem;padding:var(--pad);min-height:15rem}
+  .cell.a{grid-row:span 2;border-right:1px solid var(--line)}
+  .cell.b{border-bottom:1px solid var(--line)}
+  .cell.d{grid-column:1/-1;border-top:1px solid var(--line);min-height:0}
+  .cell-top{display:flex;justify-content:space-between;gap:1rem}
+  .cell h3{font-weight:700;font-size:clamp(1.4rem,2.4vw,2rem);line-height:1.05;letter-spacing:-.03em}
+  .cell h3 + .label{margin-top:-1rem}
+  .tags{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:auto;list-style:none}
+  .tags li{font:400 .7rem/1 var(--mono);letter-spacing:.06em;padding:.6rem .75rem;border:1px solid var(--line);
+    color:var(--muted);transition:background .35s var(--ease),color .35s var(--ease),border-color .35s var(--ease)}
+  .tags li:hover{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+  .langs{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--pad)}
+  .lang{display:flex;flex-direction:column;gap:.5rem;font:400 .72rem/1.4 var(--mono);letter-spacing:.06em}
+  .lang span:last-of-type{color:var(--muted);text-transform:uppercase;letter-spacing:.14em;font-size:.65rem}
+  .meter{position:relative;height:1px;margin-top:.5rem;background:var(--line)}
+  .meter::after{content:"";position:absolute;inset:0 auto 0 0;width:calc(var(--v) * 100%);background:var(--fg);
+    transform:scaleX(0);transform-origin:left;transition:transform 1.8s var(--ease) .5s}
+  .in .meter::after,html:not(.js) .meter::after{transform:none}
+
+  /* 02 education */
+  .edu{display:grid;grid-template-columns:3fr 6fr 3fr;align-items:start}
+  .edu > *{padding:clamp(1.75rem,3.4vw,2.75rem) var(--pad)}
+  .edu-year{display:flex;align-items:center;gap:.7rem;font:400 .78rem/1.4 var(--mono);letter-spacing:.06em;
+    border-right:1px solid var(--line);align-self:stretch}
+  .edu-year::before{content:"";width:5px;height:5px;background:var(--fg);transform:scale(0);
+    transition:transform .5s var(--ease)}
+  .edu:hover .edu-year::before{transform:none}
+  .edu h3{font-weight:700;font-size:clamp(1.2rem,2.1vw,1.7rem);line-height:1.1;letter-spacing:-.03em}
+  .edu h3 + .label{margin-top:.8rem}
+  .edu-meta{text-align:right}
+
+  /* 03 licenses — hover invert index */
+  .cert{position:relative;isolation:isolate;display:grid;grid-template-columns:3fr 5fr 2fr 1fr 1fr;align-items:center;
+    transition:color .45s var(--ease)}
+  .cert::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--fg);
+    transform:scaleY(0);transform-origin:top;transition:transform .6s var(--ease)}
+  .cert:hover,.cert:focus-visible{color:var(--bg);outline:none}
+  .cert:hover::before,.cert:focus-visible::before{transform:none;transform-origin:bottom}
+  .cert > span{padding:1.6rem var(--pad)}
+  .c-idx,.c-org,.c-year{font:400 .7rem/1.4 var(--mono);letter-spacing:.12em;text-transform:uppercase}
+  .c-org,.c-year{opacity:.55}
+  .c-title{font-weight:600;font-size:clamp(1.02rem,1.7vw,1.35rem);letter-spacing:-.02em;line-height:1.2}
+  .c-arrow{text-align:right;font-size:1.1rem;transition:transform .6s var(--ease)}
+  .cert:hover .c-arrow{transform:rotate(45deg)}
+
+  /* 04 honors — editorial */
+  .awards{list-style:none}
+  .award{display:grid;grid-template-columns:3fr 9fr;transition:opacity .5s var(--ease)}
+  .awards:hover .award:not(:hover){opacity:.28}
+  .a-year{padding:clamp(2rem,4vw,3.25rem) var(--pad);border-right:1px solid var(--line);
+    font:400 .78rem/1.4 var(--mono);letter-spacing:.06em}
+  .a-body{padding:clamp(2rem,4vw,3.25rem) var(--pad)}
+  .a-title{font-weight:800;font-size:clamp(1.55rem,3.6vw,3rem);line-height:1;letter-spacing:-.04em;
+    transition:transform .8s var(--ease)}
+  .award:hover .a-title{transform:translateX(.75rem)}
+  .a-meta{display:flex;flex-wrap:wrap;gap:.5rem 1.75rem;margin-top:1.1rem}
+
+  /* 05 volunteering */
+  .vol{display:grid;grid-template-columns:3fr 4.5fr 4.5fr}
+  .vol > *{padding:clamp(1.75rem,3.4vw,2.75rem) var(--pad)}
+  .vol > * + *{border-left:1px solid var(--line)}
+  .vol h3{font-weight:700;font-size:clamp(1.2rem,2.1vw,1.7rem);line-height:1.1;letter-spacing:-.03em}
+  .vol h3 + .label{margin-top:.8rem}
+  .org{font:500 .74rem/1.4 var(--mono);letter-spacing:.12em;text-transform:uppercase}
+  .skel{display:grid;gap:.6rem;margin-top:1.25rem}
+  .skel i{position:relative;display:block;height:5px;width:var(--w);background:var(--line);overflow:hidden}
+  .skel i::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,var(--shimmer),transparent);
+    transform:translateX(-100%);animation:shimmer 2.8s var(--ease) infinite}
+  .skel i:nth-child(2)::after{animation-delay:.15s}.skel i:nth-child(3)::after{animation-delay:.3s}
+  @keyframes shimmer{60%,100%{transform:translateX(100%)}}
+
+  /* ───────── footer ───────── */
+  .foot{margin-bottom:clamp(80px,12vh,120px);border-bottom:1px solid var(--line)}
+  .socials{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--line)}
+  .soc{position:relative;isolation:isolate;display:flex;flex-direction:column;justify-content:space-between;
+    min-height:clamp(9rem,15vw,12.5rem);padding:var(--pad);transition:color .45s var(--ease)}
+  .soc + .soc{border-left:1px solid var(--line)}
+  .soc::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--fg);
+    transform:scaleY(0);transform-origin:top;transition:transform .6s var(--ease)}
+  .soc:hover,.soc:focus-visible{color:var(--bg);outline:none}
+  .soc:hover::before,.soc:focus-visible::before{transform:none;transform-origin:bottom}
+  .soc .label{color:inherit;opacity:.5}
+  .soc-label{display:inline-block;align-self:flex-start;font-weight:700;font-size:clamp(1.1rem,1.9vw,1.55rem);
+    letter-spacing:-.03em;line-height:1;transition:transform .6s var(--ease);will-change:transform}
+  .soc-label .br{font-family:var(--mono);font-weight:400;opacity:.4;letter-spacing:0}
+  .foot-base{display:flex;justify-content:space-between;align-items:center;gap:1rem 2rem;flex-wrap:wrap;
+    padding:1.5rem var(--pad)}
+  .foot-base a{transition:color .3s var(--ease)}
+  .foot-base a:hover{color:var(--fg)}
+
+  /* reveal — animation (not transition) so it never delays hover states */
+  html.js .rv{opacity:0}
+  html.js .in .rv{opacity:1;animation:rise 1.1s var(--ease) calc(var(--d,0) * 70ms) backwards}
+  @keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 
   /* cursor */
   .cursor{position:fixed;top:0;left:0;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;
     background:#fff;mix-blend-mode:difference;pointer-events:none;z-index:100;
     transition:width .4s var(--ease),height .4s var(--ease),margin .4s var(--ease);will-change:transform}
   .cursor.active{width:72px;height:72px;margin:-36px 0 0 -36px}
+  .cursor.link{width:34px;height:34px;margin:-17px 0 0 -17px}
 
   /* theme toggle */
   .toggle{position:fixed;right:44px;bottom:44px;z-index:60;width:14px;height:14px;background:none;border:0;
@@ -84,27 +240,200 @@
   .toggle i{display:block;width:5px;height:5px;border-radius:50%;background:var(--fg);transition:transform .4s var(--ease)}
   .toggle:hover i{transform:scale(2)}
 
+  @media (max-width:860px){
+    .sec-head{grid-template-columns:1fr}
+    .sec-label{flex-direction:row;padding:3.5rem var(--pad) 0;border-right:0}
+    .sec-title{padding-top:1.25rem}
+    .bento{grid-template-columns:1fr}
+    .cell.a{grid-row:auto;border-right:0;border-bottom:1px solid var(--line)}
+    .cell{min-height:0}
+    .langs{grid-template-columns:1fr}
+    .edu,.award,.vol{grid-template-columns:1fr}
+    .edu-year,.a-year{border-right:0;padding-bottom:0}
+    .edu > *:not(:first-child),.vol > *:not(:first-child){padding-top:1rem}
+    .edu-meta{text-align:left}
+    .vol > * + *{border-left:0}
+    .vol > *:first-child{padding-bottom:0}
+    .a-body{padding-top:1rem}
+    .cert{grid-template-columns:3.25rem 1fr 2rem}
+    .cert > span{padding:1.4rem 0}
+    .cert > .c-idx{padding-left:var(--pad)}.cert > .c-arrow{padding-right:var(--pad)}
+    .c-title{grid-column:2}
+    .c-org{grid-column:2;grid-row:2;padding-top:0 !important}
+    .c-year{grid-column:2;grid-row:3;padding-top:.3rem !important}
+    .c-idx{grid-row:1}.c-arrow{grid-column:3;grid-row:1}
+    .socials{grid-template-columns:1fr 1fr}
+    .soc:nth-child(3){border-left:0}
+    .soc:nth-child(n+3){border-top:1px solid var(--line)}
+    .foot-base{flex-direction:column;align-items:flex-start}
+  }
   @media (max-width:600px){.meta.t,.meta.r{display:none}.frame{inset:14px}
     .cross.tl,.cross.tr{top:7px}.cross.bl,.cross.br{bottom:7px}.cross.tl,.cross.bl{left:7px}.cross.tr,.cross.br{right:7px}
-    .meta.l{left:30px;bottom:30px}.toggle{right:30px;bottom:30px}}
+    .meta.l{left:30px;bottom:30px}.toggle{right:30px;bottom:30px}
+    body.scrolled .meta.l{opacity:0 !important}
+    .status{letter-spacing:.2em}}
   @media (hover:none){body,a,button{cursor:auto}.cursor{display:none}}
-  @media (prefers-reduced-motion:reduce){.grain{animation:none}}
+  @media (prefers-reduced-motion:reduce){.grain,.skel i::after,.cue::after{animation:none}
+    html.js .in .rv{animation:none}}
+  @media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
 </style>
 </head>
 <body>
+  <canvas class="leaves" id="leaves" aria-hidden="true"></canvas>
   <div class="grain"></div>
   <div class="frame"></div>
   <span class="cross tl"></span><span class="cross tr"></span>
   <span class="cross bl"></span><span class="cross br"></span>
 
-  <span class="meta t">Index / 001</span>
+  <span class="meta t" id="metaIndex">00 / Index</span>
   <span class="meta r">Portfolio — 2026</span>
-  <span class="meta l">Jakarta, ID — GMT+7</span>
+  <span class="meta l">Jakarta, ID — <span id="clock">--:--:--</span> GMT+7</span>
 
-  <main class="stage">
-    <div class="wrap" data-hover>
-      <h1 class="headline" id="headline" aria-live="polite">&nbsp;</h1>
-      <p class="sig">- Juleo Hermanto</p>
+  <!-- ───────── HERO ───────── -->
+  <header class="hero" id="top" data-index="00 / Index">
+    <div class="hero-center">
+      <div class="wrap" data-cursor="lg">
+        <h1 class="headline" id="headline" aria-live="polite">&nbsp;</h1>
+        <p class="sig">- Juleo Hermanto</p>
+      </div>
+      <p class="status"><i class="pulse"></i>Under construction</p>
+    </div>
+    <a class="cue" href="#skills" aria-label="Scroll to content"></a>
+  </header>
+
+  <main class="page">
+    <div class="sheet">
+
+      <!-- 01 / SKILLS -->
+      <section class="sec" id="skills" data-index="01 / Skills">
+        <div class="sec-head">
+          <div class="sec-label label rv"><span><b>01</b> / 05</span><span>[ 04 Categories ]</span></div>
+          <h2 class="sec-title rv">Skills</h2>
+        </div>
+        <div class="bento">
+          <article class="cell a rv">
+            <div class="cell-top label"><span><b>Cat. 01</b></span><span>08 Items</span></div>
+            <h3>Technical Skills</h3>
+            <p class="label">[ Category 01 — Technical Skills Placeholder ]</p>
+            <ul class="tags">
+              <li>[ Skill 01 ]</li><li>[ Skill 02 ]</li><li>[ Skill 03 ]</li><li>[ Skill 04 ]</li>
+              <li>[ Skill 05 ]</li><li>[ Skill 06 ]</li><li>[ Skill 07 ]</li><li>[ Skill 08 ]</li>
+            </ul>
+          </article>
+          <article class="cell b rv">
+            <div class="cell-top label"><span><b>Cat. 02</b></span><span>06 Items</span></div>
+            <h3>Tools &amp; Frameworks</h3>
+            <p class="label">[ Category 02 — Tools &amp; Frameworks Placeholder ]</p>
+            <ul class="tags">
+              <li>[ Tool 01 ]</li><li>[ Tool 02 ]</li><li>[ Tool 03 ]</li>
+              <li>[ Tool 04 ]</li><li>[ Tool 05 ]</li><li>[ Tool 06 ]</li>
+            </ul>
+          </article>
+          <article class="cell c rv">
+            <div class="cell-top label"><span><b>Cat. 03</b></span><span>04 Items</span></div>
+            <h3>Soft Skills</h3>
+            <p class="label">[ Category 03 — Soft Skills Placeholder ]</p>
+            <ul class="tags">
+              <li>[ Trait 01 ]</li><li>[ Trait 02 ]</li><li>[ Trait 03 ]</li><li>[ Trait 04 ]</li>
+            </ul>
+          </article>
+          <article class="cell d rv">
+            <div class="cell-top label"><span><b>Cat. 04</b> — Languages</span><span>03 Items</span></div>
+            <div class="langs">
+              <div class="lang"><span>[ Language 01 ]</span><span>Native</span><i class="meter" style="--v:1"></i></div>
+              <div class="lang"><span>[ Language 02 ]</span><span>Professional</span><i class="meter" style="--v:.8"></i></div>
+              <div class="lang"><span>[ Language 03 ]</span><span>Elementary</span><i class="meter" style="--v:.35"></i></div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- 02 / EDUCATION -->
+      <section class="sec" id="education" data-index="02 / Education">
+        <div class="sec-head">
+          <div class="sec-label label rv"><span><b>02</b> / 05</span><span>[ Chronological ]</span></div>
+          <h2 class="sec-title rv">Education</h2>
+        </div>
+        <div class="rows">
+          <article class="edu rv" data-cursor="sm">
+            <span class="edu-year">20XX — 20XX</span>
+            <div><h3>[ University / School Name Placeholder ]</h3><p class="label">[ Degree — Field of Study Placeholder ]</p></div>
+            <p class="edu-meta label">[ City, Country ]<br>[ GPA 0.00 / 4.00 ]</p>
+          </article>
+          <article class="edu rv" data-cursor="sm">
+            <span class="edu-year">20XX — 20XX</span>
+            <div><h3>[ High School Name Placeholder ]</h3><p class="label">[ Major / Track Placeholder ]</p></div>
+            <p class="edu-meta label">[ City, Country ]<br>[ Grade Placeholder ]</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- 03 / LICENSES & CERTIFICATIONS -->
+      <section class="sec" id="licenses" data-index="03 / Licenses">
+        <div class="sec-head">
+          <div class="sec-label label rv"><span><b>03</b> / 05</span><span>[ 04 Credentials ]</span></div>
+          <h2 class="sec-title rv">Licenses &amp; Certifications</h2>
+        </div>
+        <div class="rows">
+          <a class="cert rv" href="#"><span class="c-idx">01</span><span class="c-title">[ Certification Title Placeholder ]</span><span class="c-org">[ Issuing Organization ]</span><span class="c-year">[ 20XX ]</span><span class="c-arrow">↗</span></a>
+          <a class="cert rv" href="#"><span class="c-idx">02</span><span class="c-title">[ Certification Title Placeholder ]</span><span class="c-org">[ Issuing Organization ]</span><span class="c-year">[ 20XX ]</span><span class="c-arrow">↗</span></a>
+          <a class="cert rv" href="#"><span class="c-idx">03</span><span class="c-title">[ Certification Title Placeholder ]</span><span class="c-org">[ Issuing Organization ]</span><span class="c-year">[ 20XX ]</span><span class="c-arrow">↗</span></a>
+          <a class="cert rv" href="#"><span class="c-idx">04</span><span class="c-title">[ License Title Placeholder ]</span><span class="c-org">[ Issuing Organization ]</span><span class="c-year">[ 20XX ]</span><span class="c-arrow">↗</span></a>
+        </div>
+      </section>
+
+      <!-- 04 / HONORS & AWARDS -->
+      <section class="sec" id="honors" data-index="04 / Honors">
+        <div class="sec-head">
+          <div class="sec-label label rv"><span><b>04</b> / 05</span><span>[ 03 Distinctions ]</span></div>
+          <h2 class="sec-title rv">Honors &amp; Awards</h2>
+        </div>
+        <ol class="awards rows">
+          <li class="award rv" data-cursor="sm"><span class="a-year">20XX</span><div class="a-body"><h3 class="a-title">[ Award / Achievement Title Placeholder ]</h3><p class="a-meta label"><span>[ Level — National ]</span><span>[ Organization Placeholder ]</span><span>[ 01 ]</span></p></div></li>
+          <li class="award rv" data-cursor="sm"><span class="a-year">20XX</span><div class="a-body"><h3 class="a-title">[ Award / Achievement Title Placeholder ]</h3><p class="a-meta label"><span>[ Level — Regional ]</span><span>[ Organization Placeholder ]</span><span>[ 02 ]</span></p></div></li>
+          <li class="award rv" data-cursor="sm"><span class="a-year">20XX</span><div class="a-body"><h3 class="a-title">[ Award / Achievement Title Placeholder ]</h3><p class="a-meta label"><span>[ Level — Institutional ]</span><span>[ Organization Placeholder ]</span><span>[ 03 ]</span></p></div></li>
+        </ol>
+      </section>
+
+      <!-- 05 / VOLUNTEERING -->
+      <section class="sec" id="volunteering" data-index="05 / Volunteering">
+        <div class="sec-head">
+          <div class="sec-label label rv"><span><b>05</b> / 05</span><span>[ 02 Roles ]</span></div>
+          <h2 class="sec-title rv">Volunteering</h2>
+        </div>
+        <div class="rows">
+          <article class="vol rv" data-cursor="sm">
+            <span class="label"><b>01</b> — [ 20XX — 20XX ]</span>
+            <div><h3>[ Role Placeholder ]</h3><p class="label">[ Period / Cause Placeholder ]</p></div>
+            <div><p class="org">[ Organization Name ]</p><div class="skel" aria-hidden="true"><i style="--w:92%"></i><i style="--w:74%"></i><i style="--w:48%"></i></div></div>
+          </article>
+          <article class="vol rv" data-cursor="sm">
+            <span class="label"><b>02</b> — [ 20XX — 20XX ]</span>
+            <div><h3>[ Role Placeholder ]</h3><p class="label">[ Period / Cause Placeholder ]</p></div>
+            <div><p class="org">[ Organization Name ]</p><div class="skel" aria-hidden="true"><i style="--w:86%"></i><i style="--w:62%"></i><i style="--w:40%"></i></div></div>
+          </article>
+        </div>
+      </section>
+
+      <!-- FOOTER -->
+      <footer class="sec foot" id="contact" data-index="06 / Contact">
+        <div class="sec-head">
+          <div class="sec-label label rv"><span><b>06</b> / Elsewhere</span><span>[ Find me online ]</span></div>
+          <h2 class="sec-title rv">Contact</h2>
+        </div>
+        <nav class="socials" aria-label="Social links">
+          <a class="soc rv" href="#"><span class="label">S / 01</span><span class="soc-label"><span class="br">[</span> LinkedIn ↗ <span class="br">]</span></span></a>
+          <a class="soc rv" href="#"><span class="label">S / 02</span><span class="soc-label"><span class="br">[</span> GitHub ↗ <span class="br">]</span></span></a>
+          <a class="soc rv" href="#"><span class="label">S / 03</span><span class="soc-label"><span class="br">[</span> Instagram ↗ <span class="br">]</span></span></a>
+          <a class="soc rv" href="#"><span class="label">S / 04</span><span class="soc-label"><span class="br">[</span> WhatsApp ↗ <span class="br">]</span></span></a>
+        </nav>
+        <div class="foot-base label rv">
+          <span>© 2026 JULEO HERMANTO. ALL RIGHTS RESERVED.</span>
+          <span>[ v0.1 — Under construction ]</span>
+          <a href="#top">Back to top ↑</a>
+        </div>
+      </footer>
+
     </div>
   </main>
 
@@ -114,8 +443,9 @@
 <script>
 /** TextScramble — per-character cipher morph driven by requestAnimationFrame */
 class TextScramble {
-  constructor(el, chars = '!<>-_\\/[]{}—=+*^?#________%&@$~') {
+  constructor(el, chars = '!<>-_\\/[]{}—=+*^?#________%&@$~', { nbsp = true } = {}) {
     this.el = el; this.chars = chars; this.frame = 0; this.queue = [];
+    this.space = nbsp ? '&nbsp;' : ' ';
     this.raf = 0; this.update = this.update.bind(this);
   }
   setText(newText) {
@@ -137,7 +467,7 @@ class TextScramble {
       if (this.frame >= q.end) { complete++; out += this.esc(q.to); }
       else if (this.frame >= q.start) {
         if (!q.char || Math.random() < 0.28) q.char = this.rand();
-        out += q.to === ' ' && !q.from.trim() ? ' ' : `<span class="dud">${this.esc(q.char)}</span>`;
+        out += q.to === ' ' && !q.from.trim() ? this.space : `<span class="dud">${this.esc(q.char)}</span>`;
       } else out += this.esc(q.from);
     }
     this.el.innerHTML = out;
@@ -146,7 +476,7 @@ class TextScramble {
     this.raf = requestAnimationFrame(this.update);
   }
   rand() { return this.chars[Math.floor(Math.random() * this.chars.length)]; }
-  esc(c) { return c === '<' ? '&lt;' : c === '>' ? '&gt;' : c === '&' ? '&amp;' : c === ' ' ? '&nbsp;' : c; }
+  esc(c) { return c === '<' ? '&lt;' : c === '>' ? '&gt;' : c === '&' ? '&amp;' : c === ' ' ? this.space : c; }
 }
 
 /** Looping morph between phrases, timed with rAF */
@@ -157,7 +487,6 @@ class Morpher {
     this.tick = this.tick.bind(this);
   }
   async start() {
-    el: { }
     await this.fx.setText(this.phrases[0]);
     this.last = performance.now();
     requestAnimationFrame(this.tick);
@@ -175,14 +504,15 @@ class Morpher {
   }
 }
 
-/** Smooth custom cursor */
+/** Smooth custom cursor — delegated hover states: data-cursor="lg" grows large, links/rows grow small */
 class Cursor {
   constructor(el) {
     this.el = el; this.x = this.tx = innerWidth / 2; this.y = this.ty = innerHeight / 2;
-    addEventListener('pointermove', e => { this.tx = e.clientX; this.ty = e.clientY; });
-    document.querySelectorAll('[data-hover],button').forEach(n => {
-      n.addEventListener('pointerenter', () => el.classList.add('active'));
-      n.addEventListener('pointerleave', () => el.classList.remove('active'));
+    addEventListener('pointermove', e => { this.tx = e.clientX; this.ty = e.clientY; }, { passive: true });
+    document.addEventListener('pointerover', e => {
+      const t = e.target.closest('a,button,[data-cursor],.tags li');
+      el.classList.toggle('active', !!t && t.dataset.cursor === 'lg');
+      el.classList.toggle('link', !!t && t.dataset.cursor !== 'lg');
     });
     this.loop = this.loop.bind(this); this.loop();
   }
@@ -193,11 +523,300 @@ class Cursor {
   }
 }
 
-const morpher = new Morpher(document.getElementById('headline'), ['Hello', 'Coming Soon']);
+/**
+ * LeafField — monochrome autumn leaves on a procedural wind field.
+ * Leaf silhouettes are pre-rendered once into sprites (4 shapes × 4 tones),
+ * so each frame is just one drawImage per leaf with a single affine transform
+ * (rotation + flip scale + skew fakes the 3D tumble).
+ */
+const SPRITE = 128, SR = 54;
+class LeafField {
+  constructor(canvas) {
+    this.c = canvas; this.ctx = canvas.getContext('2d');
+    this.reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.leaves = [];
+    this.mouse = { x: -1e4, y: -1e4, vx: 0, vy: 0, px: null, py: null, pt: 0 };
+    this.scrollDelta = 0; this.lastScrollY = scrollY;
+    this.gust = 0; this.gustTarget = 0; this.gustEnd = 0;
+    this.start = this.last = performance.now();
+    this.nextGust = this.start + 7000;
+    this.opacity = -1;
+    this.paths = LeafField.shapes(SR);
+    this.setTheme(document.body.classList.contains('light'));
+    this.resize();
+    addEventListener('resize', () => this.resize(), { passive: true });
+    addEventListener('pointermove', e => this.onMove(e), { passive: true });
+    document.documentElement.addEventListener('pointerleave', () => { this.mouse.x = this.mouse.y = -1e4; this.mouse.px = null; });
+    addEventListener('scroll', () => { const y = scrollY; this.scrollDelta += y - this.lastScrollY; this.lastScrollY = y; }, { passive: true });
+    this.loop = this.loop.bind(this);
+    requestAnimationFrame(this.loop);
+  }
+
+  /** Leaf geometry, tip pointing up, centred in a ±R box. Returns outline / veins / stem paths. */
+  static shapes(R) {
+    const P = () => new Path2D(), out = [], D = Math.PI / 180;
+
+    { // maple — polar profile through lobe tips & sinuses, with serrated teeth
+      const keys = [[-90, 1], [-63, .47], [-32, .94], [2, .42], [30, .6], [66, .2], [90, .16]];
+      const ring = keys.concat(keys.slice(0, -1).reverse().map(([a, r]) => [180 - a, r]));
+      const o = P(), v = P(), s = P(), oy = .08 * R;
+      let k = 0;
+      for (let a = -90; a <= 270; a++) {
+        while (k < ring.length - 2 && a > ring[k + 1][0]) k++;
+        const [a0, r0] = ring[k], [a1, r1] = ring[k + 1];
+        let r = r0 + (r1 - r0) * (a - a0) / (a1 - a0);
+        const w = Math.min(1, Math.max(0, (r - .4) / .35));
+        r *= 1 - .07 * w * Math.abs(Math.sin((a + 90) * D * 15));
+        const x = Math.cos(a * D) * r * R, y = Math.sin(a * D) * r * R + oy;
+        a === -90 ? o.moveTo(x, y) : o.lineTo(x, y);
+      }
+      o.closePath();
+      ring.forEach(([a, r]) => { if (r > .5) { v.moveTo(0, oy + .1 * R); v.lineTo(Math.cos(a * D) * r * R * .86, Math.sin(a * D) * r * R * .86 + oy); } });
+      s.moveTo(0, oy + .1 * R); s.quadraticCurveTo(.06 * R, .55 * R, .02 * R, .9 * R);
+      out.push({ o, v, s });
+    }
+    { // oak — rounded lobes along the midrib
+      const o = P(), v = P(), s = P(), N = 90, top = -.98 * R, len = 1.66 * R, pts = [];
+      const half = t => Math.sin(Math.PI * Math.pow(t, .8)) * .4 * (.5 + .5 * Math.pow(Math.abs(Math.sin(t * Math.PI * 4.5 + .15)), .55));
+      for (let i = 0; i <= N; i++) { const t = i / N; pts.push([half(t) * R, top + t * len]); }
+      o.moveTo(0, top); pts.forEach(([x, y]) => o.lineTo(x, y));
+      for (let i = pts.length - 1; i >= 0; i--) o.lineTo(-pts[i][0], pts[i][1]);
+      o.closePath();
+      const base = top + len;
+      v.moveTo(0, top + .08 * R); v.lineTo(0, base);
+      for (let k = 0; k < 4; k++) {
+        const t = (Math.PI / 2 + k * Math.PI - .15) / (4.5 * Math.PI), y = top + t * len, x = half(t) * R * .8;
+        v.moveTo(0, y + .12 * R); v.lineTo(x, y); v.moveTo(0, y + .12 * R); v.lineTo(-x, y);
+      }
+      s.moveTo(0, base - .02 * R); s.quadraticCurveTo(-.05 * R, base + .15 * R, -.02 * R, base + .3 * R);
+      out.push({ o, v, s });
+    }
+    { // ginkgo — fan with central notch and fine radial venation
+      const o = P(), v = P(), s = P(), by = .38 * R, r0 = 1.18 * R, A0 = -148, A1 = -32;
+      const pt = a => {
+        const notch = 1 - .26 * Math.exp(-(((a + 90) / 6) ** 2));
+        const rr = r0 * notch * (1 + .022 * Math.sin(a * D * 44));
+        return [Math.cos(a * D) * rr, by + Math.sin(a * D) * rr];
+      };
+      const p0 = pt(A0);
+      o.moveTo(0, by); o.quadraticCurveTo(-.32 * R, by - .12 * R, p0[0], p0[1]);
+      for (let a = A0; a <= A1; a++) { const p = pt(a); o.lineTo(p[0], p[1]); }
+      o.quadraticCurveTo(.32 * R, by - .12 * R, 0, by);
+      for (let a = A0 + 8; a <= A1 - 8; a += 9) { const p = pt(a); v.moveTo(0, by); v.lineTo(p[0] * .92, by + (p[1] - by) * .92); }
+      s.moveTo(0, by); s.quadraticCurveTo(.04 * R, by + .3 * R, .12 * R, by + .58 * R);
+      out.push({ o, v, s });
+    }
+    { // birch-like ovate leaf
+      const o = P(), v = P(), s = P();
+      o.moveTo(0, -R);
+      o.bezierCurveTo(.5 * R, -.62 * R, .52 * R, .3 * R, 0, .62 * R);
+      o.bezierCurveTo(-.52 * R, .3 * R, -.5 * R, -.62 * R, 0, -R);
+      v.moveTo(0, -.9 * R); v.lineTo(0, .62 * R);
+      for (let i = 0; i < 5; i++) {
+        const y = -.55 * R + i * .24 * R, w = .3 * R * Math.sin(Math.PI * (i + 1) / 6.2);
+        v.moveTo(0, y + .14 * R); v.lineTo(w, y); v.moveTo(0, y + .14 * R); v.lineTo(-w, y);
+      }
+      s.moveTo(0, .62 * R); s.quadraticCurveTo(.04 * R, .8 * R, .02 * R, .98 * R);
+      out.push({ o, v, s });
+    }
+    return out;
+  }
+
+  setTheme(light) {
+    const tones = light ? [
+      { fill: '#0c0c0c', vein: 'cut' },
+      { fill: 'rgba(8,8,8,.14)', stroke: 'rgba(8,8,8,.5)', vein: 'rgba(8,8,8,.22)' },
+      { fill: '#8a8a8a', vein: 'cut' },
+      { fill: '#efefef', stroke: 'rgba(8,8,8,.55)', vein: 'rgba(8,8,8,.2)' },
+    ] : [
+      { fill: '#F5F5F5', vein: 'cut' },                                                      // crisp white
+      { fill: 'rgba(245,245,245,.16)', stroke: 'rgba(245,245,245,.55)', vein: 'rgba(245,245,245,.22)' }, // translucent off-white
+      { fill: '#888888', vein: 'cut' },                                                      // silver-gray
+      { fill: '#151515', stroke: 'rgba(245,245,245,.5)', vein: 'rgba(245,245,245,.16)' },    // charcoal + white outline
+    ];
+    this.sprites = this.paths.map(p => tones.map(t => LeafField.sprite(p, t)));
+  }
+
+  static sprite(p, t) {
+    const cv = document.createElement('canvas'); cv.width = cv.height = SPRITE;
+    const g = cv.getContext('2d');
+    g.translate(SPRITE / 2, SPRITE / 2); g.lineCap = g.lineJoin = 'round';
+    g.fillStyle = t.fill; g.fill(p.o);
+    g.strokeStyle = t.stroke || t.fill; g.lineWidth = 2.2; g.stroke(p.s);
+    if (t.stroke) { g.lineWidth = 1.3; g.stroke(p.o); }
+    if (t.vein === 'cut') {
+      g.globalCompositeOperation = 'destination-out';
+      g.strokeStyle = 'rgba(0,0,0,.55)'; g.lineWidth = 1.1; g.stroke(p.v);
+      g.globalCompositeOperation = 'source-over';
+    } else { g.strokeStyle = t.vein; g.lineWidth = .9; g.stroke(p.v); }
+    return cv;
+  }
+
+  resize() {
+    this.w = innerWidth; this.h = innerHeight;
+    // cap backing-store size so 4K screens stay cheap
+    this.dpr = Math.max(1, Math.min(devicePixelRatio || 1, 2, Math.sqrt(4.5e6 / (this.w * this.h))));
+    this.c.width = Math.round(this.w * this.dpr); this.c.height = Math.round(this.h * this.dpr);
+    const target = Math.round(Math.min(56, Math.max(16, this.w * this.h / 30000)) * (this.reduced ? .5 : 1));
+    while (this.leaves.length < target) this.leaves.push(this.spawn(true));
+    this.leaves.length = target;
+  }
+
+  onMove(e) {
+    const m = this.mouse, now = performance.now();
+    if (m.px !== null) {
+      const k = Math.min(4, Math.max(.05, (now - m.pt) / 16.667));
+      m.vx = m.vx * .5 + (e.clientX - m.px) / k * .5;
+      m.vy = m.vy * .5 + (e.clientY - m.py) / k * .5;
+    }
+    m.px = m.x = e.clientX; m.py = m.y = e.clientY; m.pt = now;
+  }
+
+  /** horizontal wind: slow drifting base + travelling turbulence bands + occasional gusts */
+  windAt(t, x, y) {
+    return .75 + Math.sin(t * .17) * .45 + Math.sin(t * .51 + 1.3) * .25
+      + Math.sin(y * .006 + t * .8) * .3 + Math.sin(x * .0035 - t * .6) * .18 + this.gust;
+  }
+
+  spawn(initial) {
+    const near = Math.random() < .07;                       // a few large, soft foreground leaves
+    const z = near ? 1.15 + Math.random() * .25 : .25 + Math.random() * .75;
+    const L = {
+      z, type: Math.random() * 4 | 0, tone: Math.random() * 4 | 0,
+      size: near ? 26 + Math.random() * 12 : 6 + z * 16 + Math.random() * 3,
+      alpha: near ? .2 + Math.random() * .12 : .3 + z * .55,
+      fall: .6 + Math.random() * .6, vx: 0, vy: 0,
+      rot: Math.random() * 6.28, vr0: (Math.random() - .5) * .03,
+      flip: Math.random() * 6.28, flipV0: .015 + Math.random() * .045,
+      tilt: Math.random() * 6.28, tiltV: .01 + Math.random() * .02,
+      phase: Math.random() * 6.28, swayF: .01 + Math.random() * .025, swayA: .4 + Math.random() * .9,
+    };
+    L.vr = L.vr0; L.flipV = L.flipV0;
+    this.place(L, initial);
+    return L;
+  }
+
+  place(L, initial) {
+    if (initial) { L.x = Math.random() * this.w; L.y = Math.random() * this.h; return; }
+    const wind = this.windAt(this.last / 1000, 0, this.h * .3), W = this.w, H = this.h;
+    if (Math.random() < Math.min(.45, Math.max(0, wind * .22))) { L.x = -40; L.y = Math.random() * H * .75; }
+    else if (Math.random() < Math.min(.45, Math.max(0, -wind * .22))) { L.x = W + 40; L.y = Math.random() * H * .75; }
+    else { L.x = (wind > 0 ? -W * .2 : 0) + Math.random() * W * 1.2; L.y = -40 - Math.random() * 80; }
+    L.vx = wind * .6; L.vy = L.fall * .6;
+  }
+
+  loop(now) {
+    const dt = Math.min(3, (now - this.last) / 16.667); this.last = now;
+    const t = now / 1000, ctx = this.ctx, m = this.mouse, dpr = this.dpr, W = this.w, H = this.h;
+    const speed = this.reduced ? .35 : 1;
+
+    if (!this.reduced && now > this.nextGust) {
+      this.gustTarget = .8 + Math.random() * 1.6;
+      this.gustEnd = now + 1600 + Math.random() * 2000;
+      this.nextGust = now + 9000 + Math.random() * 10000;
+    }
+    if (this.gustEnd && now > this.gustEnd) { this.gustTarget = 0; this.gustEnd = 0; }
+    this.gust += (this.gustTarget - this.gust) * .015 * dt;
+
+    m.vx *= Math.pow(.86, dt); m.vy *= Math.pow(.86, dt);
+    const sd = Math.max(-60, Math.min(60, this.scrollDelta)); this.scrollDelta = 0;
+    const intro = Math.min(1, (now - this.start) / 2200);
+    const op = +(1 - .5 * Math.min(1, scrollY / H)).toFixed(3);   // recede behind content once scrolled
+    if (op !== this.opacity) { this.opacity = op; this.c.style.opacity = op; }
+
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, this.c.width, this.c.height);
+    const R = 170, R2 = R * R, mSpeed = Math.hypot(m.vx, m.vy);
+
+    for (const L of this.leaves) {
+      const depth = .45 + .75 * L.z;
+      const flat = Math.abs(Math.cos(L.flip));                     // face-on leaves catch more air
+      L.vx += (this.windAt(t, L.x, L.y) * depth - L.vx) * .02 * dt;
+      L.vy += (L.fall * (.55 + .65 * (1 - flat)) * depth + Math.cos(L.x * .005 + t * .7) * .15 - L.vy) * .03 * dt;
+
+      if (mSpeed > .3) {                                          // cursor gust
+        const dx = L.x - m.x, dy = L.y - m.y, d2 = dx * dx + dy * dy;
+        if (d2 < R2) {
+          const d = Math.sqrt(d2) || 1, f = (1 - d / R) ** 2, push = Math.min(mSpeed, 40) * f * .012;
+          L.vx += (m.vx * .045 * f + dx / d * push) * dt;
+          L.vy += (m.vy * .035 * f + dy / d * push) * dt;
+          L.vr += m.vx * .0005 * f * dt;
+          L.flipV += .015 * f * Math.min(1, mSpeed / 15) * dt;
+        }
+      }
+      L.vr += (L.vr0 - L.vr) * .01 * dt;
+      L.flipV += (L.flipV0 - L.flipV) * .01 * dt;
+      L.phase += L.swayF * dt;
+
+      L.x += (L.vx + Math.sin(L.phase) * L.swayA * depth) * dt * speed;
+      L.y += L.vy * dt * speed - sd * .2 * L.z;                   // depth parallax on scroll
+      L.rot += (L.vr + L.vx * .003 + Math.cos(L.phase) * .006) * dt * speed;
+      L.flip += L.flipV * (1 + Math.abs(L.vx) * .25) * dt * speed;
+      L.tilt += L.tiltV * dt * speed;
+
+      if (L.y > H + 60 || L.x > W + 80 || L.x < -80 || L.y < -160) { this.place(L, false); continue; }
+
+      let sx = Math.cos(L.flip); if (Math.abs(sx) < .05) sx = sx < 0 ? -.05 : .05;
+      const sy = .78 + .22 * Math.cos(L.tilt), k = Math.sin(L.flip) * .22;
+      const s = L.size / SR * dpr, cr = Math.cos(L.rot) * s, sr = Math.sin(L.rot) * s;
+      ctx.setTransform(cr * sx, sr * sx, cr * sx * k - sr * sy, sr * sx * k + cr * sy, L.x * dpr, L.y * dpr);
+      ctx.globalAlpha = L.alpha * intro * (sx < 0 ? .72 : 1);     // underside reads slightly dimmer
+      ctx.drawImage(this.sprites[L.type][L.tone], -SPRITE / 2, -SPRITE / 2);
+    }
+    requestAnimationFrame(this.loop);
+  }
+}
+
+/* ───────── boot ───────── */
+const morpher = new Morpher(document.getElementById('headline'), ['Hello Everyone!', '你好！', 'Coming Soon']);
 morpher.start();
 document.querySelector('.wrap').addEventListener('pointerenter', () => morpher.next());
 new Cursor(document.getElementById('cursor'));
-document.getElementById('toggle').addEventListener('click', () => document.body.classList.toggle('light'));
+const leaves = new LeafField(document.getElementById('leaves'));
+document.getElementById('toggle').addEventListener('click', () => {
+  const light = document.body.classList.toggle('light');
+  leaves.setTheme(light);
+});
+
+// live Jakarta clock
+const clock = document.getElementById('clock');
+const fmt = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+const tickClock = () => { clock.textContent = fmt.format(new Date()); };
+tickClock(); setInterval(tickClock, 1000);
+
+// section reveal + title scramble
+document.querySelectorAll('.sec').forEach(sec =>
+  sec.querySelectorAll('.rv').forEach((n, i) => n.style.setProperty('--d', Math.min(i, 10))));
+const reveal = new IntersectionObserver(entries => entries.forEach(en => {
+  if (!en.isIntersecting) return;
+  en.target.classList.add('in');
+  reveal.unobserve(en.target);
+  const title = en.target.querySelector('.sec-title');
+  if (title) new TextScramble(title, undefined, { nbsp: false }).setText(title.textContent);
+}), { rootMargin: '0px 0px -12% 0px' });
+document.querySelectorAll('.sec').forEach(s => reveal.observe(s));
+
+// fixed index label follows the section in view
+const metaFx = new TextScramble(document.getElementById('metaIndex'));
+let currentIndex = '00 / Index';
+const spy = new IntersectionObserver(entries => entries.forEach(en => {
+  const label = en.target.dataset.index;
+  if (en.isIntersecting && label !== currentIndex) { currentIndex = label; metaFx.setText(label); }
+}), { rootMargin: '-50% 0px -50% 0px' });
+document.querySelectorAll('[data-index]').forEach(s => spy.observe(s));
+
+addEventListener('scroll', () => document.body.classList.toggle('scrolled', scrollY > innerHeight * .5), { passive: true });
+
+// magnetic social labels
+document.querySelectorAll('.soc').forEach(a => {
+  const label = a.querySelector('.soc-label');
+  a.addEventListener('pointermove', e => {
+    const r = label.getBoundingClientRect();
+    const dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
+    label.style.transform = `translate3d(${dx * .18}px,${dy * .28}px,0)`;
+  });
+  a.addEventListener('pointerleave', () => { label.style.transform = ''; });
+});
 </script>
 </body>
 </html>
